@@ -1,0 +1,51 @@
+# week-03 维护源码、依赖信息与交付用报告，其余结果在本地重建。
+# 生成结果是否入库见 README-materials.md「保存与维护」。
+
+# ── 生成结果：seed=42 下可逐字节重建，故不入库 ─────────────
+results.csv
+results-table.tex
+results-params.tex
+results.png
+
+# ── 交付用报告：不忽略，随提交保存，便于他人直接查看 ────────
+# report.pdf 由 rebuild.sh 生成；含 CreationDate，重建后字节流会变，
+# 内容有更新时重新 add，仅时间戳变化可不必提交。
+
+# ── LaTeX 中间文件 ────────────────────────────────────────
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*-blx.bib
+
+# ── 虚拟环境与缓存 ────────────────────────────────────────
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# ── 凭据：任何时候都不要提交 ──────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.toml
