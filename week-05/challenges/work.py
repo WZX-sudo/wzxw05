@@ -10,7 +10,17 @@ def summarize_values(values):
     空输入返回 {"unique": [], "counts": {}, "repeated": set()}。
     每次调用产生独立结果，结果中的列表、字典、集合可以单独修改。
     """
-    raise NotImplementedError("请实现 summarize_values")
+    unique = []
+    counts = {}
+
+    for value in values:
+        if value not in counts:
+            unique.append(value)
+            counts[value] = 0
+        counts[value] += 1
+
+    repeated = {value for value, count in counts.items() if count > 1}
+    return {"unique": unique, "counts": counts, "repeated": repeated}
 
 
 def apply_changes(original, updates, removals):
@@ -23,7 +33,18 @@ def apply_changes(original, updates, removals):
     改回原值、新增后又删除都不算最终变化；字典键顺序不作要求。
     每次调用产生独立结果。
     """
-    raise NotImplementedError("请实现 apply_changes")
+    record = original.copy()
+    for key, value in updates:
+        record[key] = value
+    for key in removals:
+        record.pop(key, None)
+
+    changed = set()
+    for key in set(original) | set(record):
+        if key not in original or key not in record or original[key] != record[key]:
+            changed.add(key)
+
+    return {"record": record, "changed": changed}
 
 
 def compare_measurements(ids, baseline, current, threshold):
@@ -37,4 +58,17 @@ def compare_measurements(ids, baseline, current, threshold):
     恰好等于阈值属于正常；空输入也要返回三个对应的空容器。
     先把 NumPy 整数转成 Python int 再计算，避免小 dtype 溢出。
     """
-    raise NotImplementedError("请实现 compare_measurements")
+    import numpy as np
+
+    deltas = [int(after) - int(before) for before, after in zip(baseline, current)]
+    delta = np.array(deltas, dtype=np.int64)
+    alerts = []
+    normal = {}
+
+    for name, change, value in zip(ids, deltas, current):
+        if abs(change) > threshold:
+            alerts.append(name)
+        else:
+            normal[name] = int(value)
+
+    return {"delta": delta, "alerts": alerts, "normal": normal}
